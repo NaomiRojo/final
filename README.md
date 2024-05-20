@@ -68,3 +68,4 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 =======
 # TiendaEcommerce
 >>>>>>> cfe65e339b74764cabe5283b0abddf4959f4bdbd
+"# parcial" 

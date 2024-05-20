@@ -1,96 +1,102 @@
-@extends('shop')
+@extends('layouts.app')
 
 @section('content')
-<table id="cart" class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Product</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @php $total = 0 @endphp
-        @if(session('cart'))
-            @foreach(session('cart') as $id => $details)
-
-                <tr rowId="{{ $id }}">
-                    <td data-th="Product">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <h4 class="nomargin">{{ $details['name'] }}</h4>
-                            </div>
-                        </div>
-                    </td>
-                    <td data-th="Price">${{ $details['price'] }}</td>
-                    <td data-th="Quantity">
-                        <input type="number" class="form-control quantity" value="{{ $details['quantity'] }}">
-                    </td>
-                    <td data-th="Subtotal" class="text-center subtotal">${{ $details['quantity'] * $details['price'] }}</td>
-                    <td class="actions">
-                        <button class="btn btn-outline-info btn-sm update-cart-info">Update</button>
-                        <a class="btn btn-outline-danger btn-sm delete-product"><i class="fa-solid fa-trash"></i></a>
-                    </td>
-                </tr>
-                @php
-                    $total += $details['quantity'] * $details['price'];
-                @endphp
+    <div class="container" style="margin-top: 80px">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Tienda</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Cart</li>
+            </ol>
+        </nav>
+        @if(session()->has('success_msg'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session()->get('success_msg') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+        @endif
+        @if(session()->has('alert_msg'))
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{ session()->get('alert_msg') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+        @endif
+        @if(count($errors) > 0)
+            @foreach($errors0>all() as $error)
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ $error }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
             @endforeach
         @endif
-    </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="4" class="text-right"><strong>Total: ${{ $total }}</strong></td>
-            <td class="text-right">
-                <a href="{{ url('/dashboard') }}" class="btn btn-primary"><i class="fa fa-angle-left"></i> Continue Shopping</a>
-                <button class="btn btn-danger">Checkout</button>
-            </td>
-        </tr>
-    </tfoot>
-</table>
-@endsection
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <br>
+                @if(\Cart::getTotalQuantity()>0)
+                    <h4>{{ \Cart::getTotalQuantity()}} Producto(s) en el carrito</h4><br>
+                @else
+                    <h4>No Product(s) In Your Cart</h4><br>
+                    <a href="/" class="btn btn-dark">Continue en la tienda</a>
+                @endif
 
-@section('scripts')
-<script type="text/javascript">
-
-    $(".update-cart-info").click(function (e) {
-        e.preventDefault();
-        var ele = $(this);
-        var rowId = ele.closest("tr").attr("rowId");
-        var quantity = ele.closest("tr").find(".quantity").val();
-        $.ajax({
-            url: '{{ route('update.shopping.cart') }}',
-            method: "patch",
-            data: {
-                _token: '{{ csrf_token() }}',
-                id: rowId,
-                quantity: quantity
-            },
-            success: function (response) {
-               window.location.reload();
-            }
-        });
-    });
-
-    $(".delete-product").click(function (e) {
-        e.preventDefault();
-        var ele = $(this);
-        if(confirm("Do you really want to delete?")) {
-            $.ajax({
-                url: '{{ route('delete.cart.product') }}',
-                method: "DELETE",
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    id: ele.closest("tr").attr("rowId")
-                },
-                success: function (response) {
-                    window.location.reload();
-                }
-            });
-        }
-    });
-
-</script>
+                @foreach($cartCollection as $item)
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <img src="/images/{{ $item->attributes->image }}" class="img-thumbnail" width="200" height="200">
+                        </div>
+                        <div class="col-lg-5">
+                            <p>
+                                <b><a href="/shop/{{ $item->attributes->slug }}">{{ $item->name }}</a></b><br>
+                                <b>Precio: </b>bs. {{ $item->price }}<br>
+                                <b>Sub Total: </b>bs. {{ \Cart::get($item->id)->getPriceSum() }}<br>
+                                {{--                                <b>With Discount: </b>bs{{ \Cart::get($item->id)->getPriceSumWithConditions() }}--}}
+                            </p>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="row">
+                                <form action="{{ route('cart.update') }}" method="POST">
+                                    {{ csrf_field() }}
+                                    <div class="form-group row">
+                                        <input type="hidden" value="{{ $item->id}}" id="id" name="id">
+                                        <input type="number" class="form-control form-control-sm" value="{{ $item->quantity }}"
+                                               id="quantity" name="quantity" style="width: 70px; margin-right: 10px;">
+                                        <button class="btn btn-secondary btn-sm" style="margin-right: 25px;"><i class="fa fa-edit"></i></button>
+                                    </div>
+                                </form>
+                                <form action="{{ route('cart.remove') }}" method="POST">
+                                    {{ csrf_field() }}
+                                    <input type="hidden" value="{{ $item->id }}" id="id" name="id">
+                                    <button class="btn btn-dark btn-sm" style="margin-right: 10px;"><i class="fa fa-trash"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                @endforeach
+                @if(count($cartCollection)>0)
+                    <form action="{{ route('cart.clear') }}" method="POST">
+                        {{ csrf_field() }}
+                        <button class="btn btn-secondary btn-md">Borrar Carrito</button>
+                    </form>
+                @endif
+            </div>
+            @if(count($cartCollection)>0)
+                <div class="col-lg-5">
+                    <div class="card">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><b>Total: </b>bs. {{ \Cart::getTotal() }}</li>
+                        </ul>
+                    </div>
+                    <br><a href="/" class="btn btn-dark">Continue en la tienda</a>
+                    <a href="/checkout" class="btn btn-success">?</a>
+                </div>
+            @endif
+        </div>
+        <br><br>
+    </div>
 @endsection
