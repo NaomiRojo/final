@@ -38,10 +38,8 @@
             <div class="col-lg-7">
                 <br>
                 @if(\Cart::getTotalQuantity()>0)
-                    <h4>{{ \Cart::getTotalQuantity()}} Producto(s) en el carrito</h4><br>
-                @else
-                    <h4>Sin productos en el carrito</h4><br>
-                    <a href="/" class="btn btn-dark">Continue en la tienda</a>
+                    <h4>{{ \Cart::getTotalQuantity()}} Producto(s) a pagar</h4><br>
+
                 @endif
 
                 @foreach($cartCollection as $item)
@@ -57,33 +55,11 @@
                                 {{--                                <b>With Discount: </b>bs{{ \Cart::get($item->id)->getPriceSumWithConditions() }}--}}
                             </p>
                         </div>
-                        <div class="col-lg-4">
-                            <div class="row">
-                                <form action="{{ route('cart.update') }}" method="POST">
-                                    {{ csrf_field() }}
-                                    <div class="form-group row">
-                                        <input type="hidden" value="{{ $item->id}}" id="id" name="id">
-                                        <input type="number" class="form-control form-control-sm" value="{{ $item->quantity }}"
-                                               id="quantity" name="quantity" style="width: 70px; margin-right: 10px;">
-                                        <button class="btn btn-secondary btn-sm" style="margin-right: 25px;"><i class="fa fa-edit"></i></button>
-                                    </div>
-                                </form>
-                                <form action="{{ route('cart.remove') }}" method="POST">
-                                    {{ csrf_field() }}
-                                    <input type="hidden" value="{{ $item->id }}" id="id" name="id">
-                                    <button class="btn btn-dark btn-sm" style="margin-right: 10px;"><i class="fa fa-trash"></i></button>
-                                </form>
-                            </div>
-                        </div>
+
                     </div>
                     <hr>
                 @endforeach
-                @if(count($cartCollection)>0)
-                    <form action="{{ route('cart.clear') }}" method="POST">
-                        {{ csrf_field() }}
-                        <button class="btn btn-secondary btn-md">Borrar Carrito</button>
-                    </form>
-                @endif
+
             </div>
             @if(count($cartCollection)>0)
                 <div class="col-lg-5">
@@ -92,8 +68,14 @@
                             <li class="list-group-item"><b>Total: </b>bs. {{ \Cart::getTotal() }}</li>
                         </ul>
                     </div>
-                    <br><a href="/" class="btn btn-dark">Continue en la tienda</a>
-                    <a href="/transaction" class="btn btn-success">Ir a pagar</a>
+                    <br><a href="/" class="btn btn-dark">Volver a la tienda</a>
+                    <a href="/cart" class="btn btn-success">Volver al carrito</a><br><br>
+
+                    <h4> Escaneé el codigo QR para realizar el pago</h4>
+
+                    <br><img src="/images/Transaccion.png" class="img-thumbnail" width="300" height="300">
+
+
                 </div>
             @endif
         </div>

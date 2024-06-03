@@ -4,14 +4,18 @@ namespace App\Http\Controllers;
 
 use Cart;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
     public function shop()
     {
+        $categories = Category::all();
         $products = Product::all();
-        return view('shop')->with('SHOP')->with(['products' => $products]);
+        //return view('shop')->with('SHOP')->with(['products' => $products], ['categories' => $categories]);
+
+        return view('shop', ['products' => $products, 'categories' => $categories]);
     }
 
     public function cart()
@@ -59,5 +63,21 @@ class CartController extends Controller
     {
         \Cart::clear();
         return redirect()->route('cart.index')->with('success_msg', 'vaciado');
+    }
+
+    public function transaction()
+    {
+
+        //return redirect()->route('cart.index')->with('success_msg', 'Escaneé el codigo qr para completar la compra');
+        $cartCollection = \Cart::getContent();
+
+        return view('transaction')->with('CART ')->with(['cartCollection' => $cartCollection]);;
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $products = Product::where('name', 'like', '%' . $query . '%')->get();
+        return view('search-results', compact('products'));
     }
 }

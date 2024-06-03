@@ -19,10 +19,13 @@ return new class extends Migration
             $table->double('price');
             $table->double('shipping_cost');
             $table->text('description');
-            $table->integer('category_id');
+            $table->unsignedInteger('category_id');
             $table->unsignedInteger('brand_id')->unsigned();
             $table->string('image_path');
             $table->timestamps();
+
+
+            $table->foreign('category_id')->references('id')->on('categories');
         });
 
     }

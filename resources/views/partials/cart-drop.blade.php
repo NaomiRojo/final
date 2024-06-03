@@ -12,7 +12,7 @@
                     <br><small>Qty: {{$item->quantity}}</small>
                 </div>
                 <div class="col-lg-3">
-                    <p>${{ \Cart::get($item->id)->getPriceSum() }}</p>
+                    <p>bs. {{ \Cart::get($item->id)->getPriceSum() }}</p>
                 </div>
                 <hr>
             </div>
@@ -22,7 +22,7 @@
     <li class="list-group-item">
         <div class="row">
             <div class="col-lg-10">
-                <b>Total: </b>${{ \Cart::getTotal() }}
+                <b>Total: </b>bs. {{ \Cart::getTotal() }}
             </div>
             <div class="col-lg-2">
                 <form action="{{ route('cart.clear') }}" method="POST">
@@ -37,8 +37,8 @@
         <a class="btn btn-dark btn-sm btn-block" href="{{ route('cart.index') }}">
             CARRITO <i class="fa fa-arrow-right"></i>
         </a>
-        <a class="btn btn-dark btn-sm btn-block" href="">
-            CHECKOUT <i class="fa fa-arrow-right"></i>
+        <a class="btn btn-dark btn-sm btn-block" href="/transaction">
+            IR A PAGAR <i class="fa fa-arrow-right"></i>
         </a>
     </div>
 @else
