@@ -7,8 +7,8 @@
             <li class="breadcrumb-item"><a href="/">Inicio</a></li>
             <li class="breadcrumb-item active" aria-current="page">Tienda</li>
 
-            <li class="breadcrumb-item"><a href="/login">Ingresar</a></li>
-            <li class="breadcrumb-item"><a href="/register">Registrarse</a></li>
+            <li class="breadcrumb-item"><a href="/dashboard">Ingresar</a></li>
+            <li class="breadcrumb-item"><a href="/dashboard">Registrarse</a></li>
         </ol>
     </nav>
     <div class="row justify-content-center">

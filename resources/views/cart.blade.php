@@ -41,7 +41,7 @@
                     <h4>{{ \Cart::getTotalQuantity()}} Producto(s) en el carrito</h4><br>
                 @else
                     <h4>Sin productos en el carrito</h4><br>
-                    <a href="/" class="btn btn-dark">Continue en la tienda</a>
+                    <a href="/shop" class="btn btn-dark">Continue en la tienda</a>
                 @endif
 
                 @foreach($cartCollection as $item)
@@ -92,7 +92,7 @@
                             <li class="list-group-item"><b>Total: </b>bs. {{ \Cart::getTotal() }}</li>
                         </ul>
                     </div>
-                    <br><a href="/" class="btn btn-dark">Continue en la tienda</a>
+                    <br><a href="/shop" class="btn btn-dark">Continue en la tienda</a>
                     <a href="/transaction" class="btn btn-success">Ir a pagar</a>
                 </div>
             @endif
